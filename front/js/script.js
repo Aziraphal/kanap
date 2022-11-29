@@ -17,5 +17,3 @@ let a = fetch(`http://localhost:3000/api/products`)
         document.querySelector("#items").insertAdjacentHTML('beforeend', display)
     })
     .catch(err => console.log(er))
-
-console.log(a)
