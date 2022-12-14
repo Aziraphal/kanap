@@ -9,29 +9,39 @@ const apiProductsUrl = 'http://localhost:3000/api/products/';
 const productPage = apiProductsUrl + currentIdProduct;
 console.log(productPage)
 
+//Ajout des détails du produit
 fetch(productPage)
     .then(r => r.json()
         .then((data) => {
             (console.log(data))
+            
+            //photo du produit
             let imageProduct = document.getElementsByClassName("item__img")[0]
             imageProduct.innerHTML = `<img src= "${data.imageUrl}" alt="${data.altTxt}"></img>`
+            
+            //nom du produit
             let nameProduct = document.getElementById("title")
-            nameProduct.innerHTML = `<h1 id= nameProduct> ${data.name}</h1>`
+            nameProduct.innerHTML = `<h1= nameProduct> ${data.name}</h1>`
+            
+            //prix du produit
             let priceProduct = document.getElementById("price")
-            priceProduct.innerHTML = `<span id= priceProduct> ${data.price}</span>`
+            priceProduct.innerHTML = `<span= priceProduct> ${data.price}</span>`
+            
+            //description du produit
             let productDescription = document.getElementById("description")
-            productDescription.innerHTML = `<p id= productDescription> ${data.description}</p>`
+            productDescription.innerHTML = `<p= productDescription> ${data.description}</p>`
+            
+            //couleur du produit en utilisant une boucle permettant le choix aux utilisateurs
+            for (let colors of data.colors) {
+                console.log(colors);
+                let productColors = document.createElement("option");
+                document.querySelector("#colors").appendChild(productColors);
+                productColors.value = colors;
+                productColors.innerHTML = colors;
+            }
         }))
-        /*.then(data => {
-(console.log(data))
-for (let product of data) {
-let item = document.querySelector(".item")
-item.querySelector(".item__img").innerHTML(`<img src= "${product.imageUrl}" alt="${product.altTxt}"></img>`)
-let imageProduct = document.createElement("img")
-imageProduct.innerHTML = `<img src= "${product[4].imageUrl}" alt="${product.altTxt}"></img>`
-.item__img.appendChild(imageProduct)
-.querySelector(".item").appendChild(item__img)
-}
-})
-.catch((error) => { }))*/
+    .catch((error) => { })
 
+    //Ajout du produit dans le panier
+    //Local storage
+    
