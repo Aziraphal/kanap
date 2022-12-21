@@ -1,69 +1,92 @@
-//Extraire l'ID
+//Crée une instance de l'objet URL en utilisant l'URL actuelle de la fenêtre du navigateur (window.location.href).
 const url = new URL(window.location.href);
 console.log(url)
+//Extrait l'ID de l'URL en utilisant la méthode searchParams.get() et en passant "id" en paramètre.
 const currentIdProduct = url.searchParams.get("id");
 console.log(currentIdProduct)
 
-//Affichage de l'objet par son id
+//Crée une nouvelle URL en concaténant l'URL de base de l'API "apiProductsUrl" avec l'ID extrait "currentIdProduct".
 const apiProductsUrl = 'http://localhost:3000/api/products/';
 const productPage = apiProductsUrl + currentIdProduct;
 console.log(productPage)
 
-//Ajout des détails du produit
+//Affichage du produit sur la page
 fetch(productPage)
-    .then(r => r.json()
-        .then((data) => {
-            (console.log(data))
+    .then(r => r.json())
+    .then((data) => {
+        console.log(data);
 
-            //photo du produit
-            let imageProduct = document.getElementsByClassName("item__img")[0]
-            imageProduct.innerHTML = `<img src= "${data.imageUrl}" alt="${data.altTxt}"></img>`
+        //photo du produit
+        let imageProduct = document.getElementsByClassName("item__img")[0];
+        imageProduct.innerHTML = `<img src="${data.imageUrl}" alt="${data.altTxt}"></img>`;
 
-            //nom du produit
-            let nameProduct = document.getElementById("title")
-            nameProduct.innerHTML = `<h1= nameProduct> ${data.name}</h1>`
+        //nom du produit
+        let nameProduct = document.getElementById("title");
+        nameProduct.innerHTML = `<h1 id="nameProduct">${data.name}</h1>`;
 
-            //prix du produit
-            let priceProduct = document.getElementById("price")
-            priceProduct.innerHTML = `<span= priceProduct> ${data.price}</span>`
+        //prix du produit
+        let priceProduct = document.getElementById("price");
+        priceProduct.innerHTML = `<span id="priceProduct">${data.price}</span>`;
 
-            //description du produit
-            let productDescription = document.getElementById("description")
-            productDescription.innerHTML = `<p= productDescription> ${data.description}</p>`
+        //description du produit
+        let productDescription = document.getElementById("description");
+        productDescription.innerHTML = `<p id="productDescription">${data.description}</p>`;
 
-            //couleur du produit en utilisant une boucle permettant le choix aux utilisateurs
-            for (let colors of data.colors) {
-                console.log(colors);
-                let productColors = document.createElement("option");
-                document.querySelector("#colors").appendChild(productColors);
-                productColors.value = colors;
-                productColors.innerHTML = colors;
-            }
-        }))
-    .catch((error) => { })
-
+        //couleur du produit en utilisant une boucle permettant le choix aux utilisateurs
+        for (let colors of data.colors) {
+            console.log(colors);
+            let productColors = document.createElement("option");
+            document.querySelector("#colors").appendChild(productColors);
+            productColors.value = colors;
+            productColors.innerHTML = colors;
+        }
+    })
+    .catch((error) => { });
+    
 //Ajout du produit dans le panier
-//Initialisation du local storage
-//let localStorageProduct = localStorage.getItem(canape)
-//faire des fonctions
-//find
-//map
-/*function addToCart(ajout){}
-let quantiteCanape = document.getElementById("quantity")
-let canape = ["id", "quantite", "couleur"]
-console.log(canape)
-let ajoutPanier = document.getElementById("addToCart")
-ajoutPanier.addEventListener("click", (fonction clic) => {
-    if (colors === null) {
-        alert("Veuillez sélectionner une couleur");
-    } else if (canapeQuantite === null) {
-        alert("Veuillez sélectionner un nombre de canapé")
-    } else {
-        let canape = ["id", "colors", "quantité"]
-        console.log(canape)
-    }
-    localStorage.setItem("produit", JSON.stringify(canape));
-})*/
+
+// Fonction appelée lorsque le bouton d'ajout au panier est cliqué
+function addToCart() {
+    // Récupération des données du produit
+    const currentIdProduct = url.searchParams.get("id");
+    const currentColor = document.getElementById('colors').value;
+    const currentQuantity = document.getElementById('quantity').value;
+
+    // Création de l'objet représentant le produit
+  const product = {
+    id: currentIdProduct,
+    color: currentColor,
+    quantity: currentQuantity
+  };
+
+  // Récupération du panier actuel dans le LocalStorage
+  let cart = localStorage.getItem('cart');
+  if (cart === null) {
+    // Initialisation du panier s'il n'existe pas encore
+    cart = [];
+  } else {
+    cart = JSON.parse(cart);
+  }
+
+  // Ajout du produit au panier
+  cart.push(product);
+  
+  // Enregistrement du panier mis à jour dans le LocalStorage
+  localStorage.setItem('cart', JSON.stringify(cart));
+}
+
+// Récupération du bouton d'ajout au panier
+const addToCartButton = document.getElementById('addToCart');
+
+// Ajout d'un écouteur d'événement de clic sur le bouton
+addToCartButton.addEventListener('click', addToCart)
+
+//localStorage.clear("cart")
 
 
 
+
+
+
+
+        
