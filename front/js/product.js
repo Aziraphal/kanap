@@ -10,6 +10,7 @@ const apiProductsUrl = 'http://localhost:3000/api/products/';
 const productPage = apiProductsUrl + currentIdProduct;
 console.log(productPage)
 
+
 //Affichage du produit sur la page
 fetch(productPage)
     .then(r => r.json())
@@ -56,7 +57,7 @@ function addToCart() {
   const product = {
     id: currentIdProduct,
     color: currentColor,
-    quantity: currentQuantity
+    quantity: currentQuantity,
   };
 
   // Récupération du panier actuel dans le LocalStorage
