@@ -16,36 +16,46 @@ function updateQuantity(id, color, quantity) {
 
   // Mise à jour du panier dans le LocalStorage
   localStorage.setItem('cart', JSON.stringify(cart));
-
 }
 
 function deleteFromCart(id, color) {
   // Récupération du panier dans le LocalStorage
-  const cart = JSON.parse(localStorage.getItem('cart'));
+  let cart = JSON.parse(localStorage.getItem('cart'));
 
-  // Parcours du panier
-  for (let i = 0; i < cart.length; i++) {
-    // Si l'élément correspond à celui à supprimer
-    if (cart[i].id === id && cart[i].color === color) {
-      // Suppression de l'élément
-      cart.splice(i, 1);
-      break;
+  // Vérification que le panier existe
+  if (cart) {
+    let productFound = false;
+
+    // Parcours du panier
+    for (let i = 0; i < cart.length; i++) {
+      // Si l'élément correspond à celui à supprimer
+      if (cart[i].id === id && cart[i].color === color) {
+        // Suppression de l'élément
+        cart.splice(i, 1);
+        productFound = true;
+        break;
+      }
     }
-  }
 
-  // Mise à jour du panier dans le LocalStorage
-  localStorage.setItem('cart', JSON.stringify(cart));
+    // Si le produit a été trouvé et supprimé du panier
+    if (productFound) {
+      // Mise à jour du panier dans le LocalStorage
+      if (cart.length > 0) {
+        localStorage.setItem('cart', JSON.stringify(cart));
+      } else {
+        // Si le panier est vide, on le vide également dans le LocalStorage
+        localStorage.removeItem('cart');
+      }
+      // Mise à jour de l'affichage du panier
+      displayCart();}}}
 
-}
-
-
+      
 async function displayCart() {
   // Récupération de la section des éléments du panier
   const cartItemsSection = document.querySelector('#cart__items');
 
   // Récupération du panier dans le LocalStorage
   const cart = JSON.parse(localStorage.getItem('cart'));
-  console.log(cart)
 
   // Vérification que le panier existe et n'est pas vide
   if (cart && cart.length > 0) {
@@ -100,15 +110,13 @@ async function displayCart() {
       // Ajout de l'élément au panier
       cartItemsSection.appendChild(article);
 
-      const deleteButtons = document.querySelectorAll('.deleteItem');
-      deleteButtons.forEach(button => {
-        button.addEventListener('click', function () {
-          const item = this.closest('[data-id][data-color]');
-          const id = item.getAttribute('data-id');
-          const color = item.getAttribute('data-color');
-          deleteFromCart(id, color);
-        });
+      const deleteButton = document.createElement('button');
+      deleteButton.classList.add('deleteItem');
+      deleteButton.textContent = 'Supprimer';
+      deleteButton.addEventListener('click', () => {
+        deleteFromCart(productData._id, productData.color);
       });
+
 
       const itemQuantityInputs = document.querySelectorAll('.itemQuantity');
       itemQuantityInputs.forEach(input => {
@@ -140,5 +148,12 @@ async function displayCart() {
   }
 }
 
-// Appel de la fonction d'affichage du panier
+
+// Événement storage qui met à jour la page web lorsque les données du LocalStorage sont modifiées
+window.addEventListener('storage', function (event) {
+  // Mise à jour de l'affichage du panier sur la page web
+  displayCart();
+});
+
+// Initialisation de l'affichage du panier sur la page web
 displayCart();
