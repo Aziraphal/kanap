@@ -1,6 +1,4 @@
-// Initialisation des variables de total
-let totalQuantity = 0;
-let totalPrice = 0;
+
 
 function updateQuantity(id, color, quantity) {
   // Récupération du panier dans le LocalStorage
@@ -19,41 +17,31 @@ function updateQuantity(id, color, quantity) {
 }
 
 function deleteFromCart(id, color) {
+  console.log('test')
   // Récupération du panier dans le LocalStorage
   let cart = JSON.parse(localStorage.getItem('cart'));
 
-  // Vérification que le panier existe
-  if (cart) {
-    let productFound = false;
+// Parcours du panier
+for (let i = 0; i < cart.length; i++) {
+  // Si l'élément correspond à celui à supprimer
+  if (cart[i].id === id && cart[i].color === color) {
+  // Suppression de l'élément
+  cart.splice(i, 1);
+  break;
+  }
+  }
+  
+  // Mise à jour du panier dans le LocalStorage
+  localStorage.setItem('cart', JSON.stringify(cart));
+  }
 
-    // Parcours du panier
-    for (let i = 0; i < cart.length; i++) {
-      // Si l'élément correspond à celui à supprimer
-      if (cart[i].id === id && cart[i].color === color) {
-        // Suppression de l'élément
-        cart.splice(i, 1);
-        productFound = true;
-        break;
-      }
-    }
-
-    // Si le produit a été trouvé et supprimé du panier
-    if (productFound) {
-      // Mise à jour du panier dans le LocalStorage
-      if (cart.length > 0) {
-        localStorage.setItem('cart', JSON.stringify(cart));
-      } else {
-        // Si le panier est vide, on le vide également dans le LocalStorage
-        localStorage.removeItem('cart');
-      }
-      // Mise à jour de l'affichage du panier
-      displayCart();}}}
-
-      
 async function displayCart() {
+  // Initialisation des variables de total
+  let totalQuantity = 0;
+  let totalPrice = 0;
   // Récupération de la section des éléments du panier
   const cartItemsSection = document.querySelector('#cart__items');
-
+  cartItemsSection.innerHTML = ""
   // Récupération du panier dans le LocalStorage
   const cart = JSON.parse(localStorage.getItem('cart'));
 
@@ -110,14 +98,18 @@ async function displayCart() {
       // Ajout de l'élément au panier
       cartItemsSection.appendChild(article);
 
-      const deleteButton = document.createElement('button');
-      deleteButton.classList.add('deleteItem');
-      deleteButton.textContent = 'Supprimer';
-      deleteButton.addEventListener('click', () => {
-        deleteFromCart(productData._id, productData.color);
+      const deleteButtons = document.querySelectorAll('.deleteItem');
+      deleteButtons.forEach(button => {
+        button.addEventListener('click', function () {
+          const item = this.closest('[data-id][data-color]');
+          const id = item.getAttribute('data-id');
+          const color = item.getAttribute('data-color');
+          deleteFromCart(id, color);
+        });
+        button.addEventListener('click', displayCart)
       });
 
-
+      //Appel de la fonction updateQuantity
       const itemQuantityInputs = document.querySelectorAll('.itemQuantity');
       itemQuantityInputs.forEach(input => {
         input.addEventListener('change', function () {
@@ -128,6 +120,7 @@ async function displayCart() {
           // Mise à jour de la quantité dans le panier
           updateQuantity(id, color, quantity);
         });
+        input.addEventListener('change', displayCart)
       });
 
       totalQuantity += productData.quantity++;
@@ -153,7 +146,30 @@ async function displayCart() {
 window.addEventListener('storage', function (event) {
   // Mise à jour de l'affichage du panier sur la page web
   displayCart();
+
 });
 
 // Initialisation de l'affichage du panier sur la page web
 displayCart();
+
+
+const emailRegex = new RegExp(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/);
+
+const form = document.querySelector(".cart__order__form");
+form.addEventListener("submit", (event) => {
+  event.preventDefault(); // empêche le formulaire de soumettre les données
+
+  const firstName = document.querySelector("#firstName").value;
+  const lastName = document.querySelector("#lastName").value;
+  const address = document.querySelector("#address").value;
+  const city = document.querySelector("#city").value;
+  const email = document.querySelector("#email").value;
+
+  // vérifiez chaque valeur en utilisant les objets RegExp et affichez un message d'erreur si nécessaire
+  if (emailRegex.match(email)) {
+    document.querySelector("#emailErrorMsg").innerHTML = "Veuillez entrer une adresse e-mail valide.";
+  } else {
+    document.querySelector("#emailErrorMsg").innerHTML = "";
+  }
+});
+
