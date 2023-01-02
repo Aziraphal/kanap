@@ -33,6 +33,8 @@ for (let i = 0; i < cart.length; i++) {
   localStorage.setItem('cart', JSON.stringify(cart));
   }
 
+  let productsData = [];
+
 async function displayCart() {
   // Initialisation des variables de total
   let totalQuantity = 0;
@@ -46,7 +48,7 @@ async function displayCart() {
   // Vérification que le panier existe et n'est pas vide
   if (cart && cart.length > 0) {
     // Tableau contenant les informations sur les produits du panier
-    const productsData = [];
+    let productsData = [];
 
     // Parcours du tableau de produits
     for (const item of cart) {
@@ -150,11 +152,11 @@ window.addEventListener('storage', function (event) {
 // Initialisation de l'affichage du panier sur la page web
 displayCart();
 
-
+let contact;
 // Récupère le formulaire
 const form = document.querySelector('.cart__order__form');
 
-// Déclare les variables qui seront utilisées dans plusieurs fonctions
+// Déclaration des variables qui pourrait être utilisées dans plusieurs fonctions
 let firstName, lastName, address, city, email;
 
 // Fonction pour afficher un message d'erreur
@@ -224,21 +226,25 @@ form.addEventListener('submit', (event) => {
     return;
   }
 
-  // Crée un objet contact à partir des données du formulaire
-  const contact = {
-    firstName: firstName,
-    lastName: lastName,
-    address: address,
-    city: city,
-    email: email,
-  };
-
-  // Crée un tableau de produits (vous devrez remplacer ceci avec votre propre logique de récupération de produits)
-  const products = [
-    { name: 'Product 1', price: 19.99 },
-    { name: 'Product 2', price: 24.99 },
-  ];
-});
+  const products = productsData.map(productData => ({
+    name: productData.name,
+    color: productData.color,
+    quantity: productData.quantity,
+    price: productData.price
+  }));
+  
+  fetch('/api/commande', {
+    method: 'POST',
+    body: JSON.stringify({
+      contact: contact,
+      products: products
+    }),
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });})
+  
+  
 
 // Ajoute des écouteurs d'événement change pour chaque élément de formulaire
 form.elements.firstName.addEventListener('change', () => {
@@ -260,8 +266,3 @@ form.elements.firstName.addEventListener('change', () => {
   form.elements.email.addEventListener('change', () => {
   clearErrorMessage('email');
   });
-
-
-
-
-
