@@ -1,5 +1,3 @@
-
-
 function updateQuantity(id, color, quantity) {
   // Récupération du panier dans le LocalStorage
   let cart = JSON.parse(localStorage.getItem('cart'));
@@ -153,23 +151,117 @@ window.addEventListener('storage', function (event) {
 displayCart();
 
 
-const emailRegex = new RegExp(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/);
+// Récupère le formulaire
+const form = document.querySelector('.cart__order__form');
 
-const form = document.querySelector(".cart__order__form");
-form.addEventListener("submit", (event) => {
-  event.preventDefault(); // empêche le formulaire de soumettre les données
+// Déclare les variables qui seront utilisées dans plusieurs fonctions
+let firstName, lastName, address, city, email;
 
-  const firstName = document.querySelector("#firstName").value;
-  const lastName = document.querySelector("#lastName").value;
-  const address = document.querySelector("#address").value;
-  const city = document.querySelector("#city").value;
-  const email = document.querySelector("#email").value;
+// Fonction pour afficher un message d'erreur
+function displayErrorMessage(message, elementId) {
+  // Récupère l'élément de message d'erreur correspondant à l'élément de formulaire invalidé
+  const errorElement = document.querySelector(`#${elementId}ErrorMsg`);
 
-  // vérifiez chaque valeur en utilisant les objets RegExp et affichez un message d'erreur si nécessaire
-  if (emailRegex.match(email)) {
-    document.querySelector("#emailErrorMsg").innerHTML = "Veuillez entrer une adresse e-mail valide.";
-  } else {
-    document.querySelector("#emailErrorMsg").innerHTML = "";
+  // Affiche le message d'erreur
+  errorElement.textContent = message;
+}
+
+// Fonction pour effacer un message d'erreur
+function clearErrorMessage(elementId) {
+  const errorElement = document.querySelector(`#${elementId}ErrorMsg`);
+  errorElement.textContent = '';
+}
+
+// Écoute l'événement de soumission de formulaire
+form.addEventListener('submit', (event) => {
+  // Empêche le comportement par défaut (envoi du formulaire au serveur)
+  event.preventDefault();
+
+  // Récupère les valeurs des champs de formulaire
+  firstName = form.elements.firstName.value;
+  lastName = form.elements.lastName.value;
+  address = form.elements.address.value;
+  city = form.elements.city.value;
+  email = form.elements.email.value;
+
+  // Vérifie si le prénom est valide en utilisant une regex
+  const firstNameRegex = /^[a-zA-Z]+$/
+  if (!firstNameRegex.test(firstName)) {
+    // Affiche un message d'erreur
+    displayErrorMessage('Veuillez entrer un prénom valide', 'firstName');
+    return;
   }
+
+  // Vérifie si le nom est valide en utilisant une regex
+  const lastNameRegex = /^[a-zA-Z]+$/
+  if (!firstNameRegex.test(lastName)) {
+    // Affiche un message d'erreur
+    displayErrorMessage('Veuillez entrer un nom valide', 'lastName');
+    return;
+  }
+
+  // Vérifie si l'adresse est valide en utilisant une regex
+  const addressRegex = /^[0-9]+\s[a-zA-Z\sàáâãäåçèéêëìíîïðòóôõöùúûüýÿ,-]*$/
+  if (!addressRegex.test(address)) {
+    // Affiche un message d'erreur
+    displayErrorMessage('Veuillez entrer une adresse valide', 'address');
+    return;
+  }
+
+  // Vérifie si la ville est valide en utilisant une regex
+  const cityRegex = /^[a-zA-Z\s']*$/
+  if (!cityRegex.test(city)) {
+    // Affiche un message d'erreur
+    displayErrorMessage('Veuillez entrer une ville valide', 'city');
+    return;
+  }
+
+  // Vérifie si l'e-mail est valide en utilisant une regex
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    // Affiche un message d'erreur
+    displayErrorMessage('Veuillez entrer une adresse e-mail valide', 'email');
+    return;
+  }
+
+  // Crée un objet contact à partir des données du formulaire
+  const contact = {
+    firstName: firstName,
+    lastName: lastName,
+    address: address,
+    city: city,
+    email: email,
+  };
+
+  // Crée un tableau de produits (vous devrez remplacer ceci avec votre propre logique de récupération de produits)
+  const products = [
+    { name: 'Product 1', price: 19.99 },
+    { name: 'Product 2', price: 24.99 },
+  ];
 });
+
+// Ajoute des écouteurs d'événement change pour chaque élément de formulaire
+form.elements.firstName.addEventListener('change', () => {
+  clearErrorMessage('firstName');
+  });
+  
+  form.elements.lastName.addEventListener('change', () => {
+  clearErrorMessage('lastName');
+  });
+  
+  form.elements.address.addEventListener('change', () => {
+  clearErrorMessage('address');
+  });
+  
+  form.elements.city.addEventListener('change', () => {
+  clearErrorMessage('city');
+  });
+  
+  form.elements.email.addEventListener('change', () => {
+  clearErrorMessage('email');
+  });
+
+
+
+
 
