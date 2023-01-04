@@ -217,7 +217,7 @@ form.addEventListener('submit', (event) => {
 
   // Récupération des ID pour envoie à l'API
   let getId = cart.map(product => product.id);
-  
+
   const result = fetch("http://localhost:3000/api/products/order", {
     method: "POST",
     headers: {
@@ -236,7 +236,7 @@ form.addEventListener('submit', (event) => {
     try {
       const data = await answer.json();
       window.location.href = `confirmation.html?id=${data.orderId}`;
-      //localStorage.clear();
+      localStorage.clear();
     } catch (e) {
     }
   });
