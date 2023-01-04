@@ -1,7 +1,8 @@
-function updateQuantity(id, color, quantity) {
-  // Récupération du panier dans le LocalStorage
-  let cart = JSON.parse(localStorage.getItem('cart'));
+// Déclaration de la variable cart qui affiche les données des produits qui sont dans le panier
+let cart = JSON.parse(localStorage.getItem('cart'));
+//console.log(cart)
 
+function updateQuantity(id, color, quantity) {
   // Mise à jour de la quantité du produit dans le panier
   cart = cart.map(item => {
     if (item.id === id && item.color === color) {
@@ -15,35 +16,28 @@ function updateQuantity(id, color, quantity) {
 }
 
 function deleteFromCart(id, color) {
-  console.log('test')
-  // Récupération du panier dans le LocalStorage
-  let cart = JSON.parse(localStorage.getItem('cart'));
+  // Parcours du panier
+  for (let i = 0; i < cart.length; i++) {
+    // Si l'élément correspond à celui à supprimer
+    if (cart[i].id === id && cart[i].color === color) {
+      // Suppression de l'élément
+      cart.splice(i, 1);
+      if (i === cart.length - 1) break;
+    }
+  }
 
-// Parcours du panier
-for (let i = 0; i < cart.length; i++) {
-  // Si l'élément correspond à celui à supprimer
-  if (cart[i].id === id && cart[i].color === color) {
-  // Suppression de l'élément
-  cart.splice(i, 1);
-  break;
-  }
-  }
-  
   // Mise à jour du panier dans le LocalStorage
   localStorage.setItem('cart', JSON.stringify(cart));
-  }
-
-  let productsData = [];
+}
 
 async function displayCart() {
   // Initialisation des variables de total
   let totalQuantity = 0;
   let totalPrice = 0;
+
   // Récupération de la section des éléments du panier
   const cartItemsSection = document.querySelector('#cart__items');
   cartItemsSection.innerHTML = ""
-  // Récupération du panier dans le LocalStorage
-  const cart = JSON.parse(localStorage.getItem('cart'));
 
   // Vérification que le panier existe et n'est pas vide
   if (cart && cart.length > 0) {
@@ -131,8 +125,6 @@ async function displayCart() {
     document.querySelector('#totalQuantity').textContent = totalQuantity;
     document.querySelector('#totalPrice').textContent = totalPrice;
 
-
-
   } else {
     // Affichage d'un message si le panier est vide
     const messageElement = document.createElement('p');
@@ -140,7 +132,6 @@ async function displayCart() {
     cartItemsSection.appendChild(messageElement);
   }
 }
-
 
 // Événement storage qui met à jour la page web lorsque les données du LocalStorage sont modifiées
 window.addEventListener('storage', function (event) {
@@ -152,12 +143,10 @@ window.addEventListener('storage', function (event) {
 // Initialisation de l'affichage du panier sur la page web
 displayCart();
 
-let contact;
+
+
 // Récupère le formulaire
 const form = document.querySelector('.cart__order__form');
-
-// Déclaration des variables qui pourrait être utilisées dans plusieurs fonctions
-let firstName, lastName, address, city, email;
 
 // Fonction pour afficher un message d'erreur
 function displayErrorMessage(message, elementId) {
@@ -226,43 +215,51 @@ form.addEventListener('submit', (event) => {
     return;
   }
 
-  const products = productsData.map(productData => ({
-    name: productData.name,
-    color: productData.color,
-    quantity: productData.quantity,
-    price: productData.price
-  }));
+  // Récupération des ID pour envoie à l'API
+  let getId = cart.map(product => product.id);
   
-  fetch('/api/commande', {
-    method: 'POST',
-    body: JSON.stringify({
-      contact: contact,
-      products: products
-    }),
+  const result = fetch("http://localhost:3000/api/products/order", {
+    method: "POST",
     headers: {
+      'Accept': 'application/json',
       'Content-Type': 'application/json'
+    },
+    
+    body: JSON.stringify({
+      contact: {
+        firstName, lastName, address, city, email
+      },
+      products : getId
+    })
+  }); 
+  result.then(async (answer) => {
+    try {
+      const data = await answer.json();
+      window.location.href = `confirmation.html?id=${data.orderId}`;
+      //localStorage.clear();
+    } catch (e) {
     }
-  });})
-  
-  
+  });
+}
+)
 
 // Ajoute des écouteurs d'événement change pour chaque élément de formulaire
 form.elements.firstName.addEventListener('change', () => {
   clearErrorMessage('firstName');
-  });
-  
-  form.elements.lastName.addEventListener('change', () => {
+});
+
+form.elements.lastName.addEventListener('change', () => {
   clearErrorMessage('lastName');
-  });
-  
-  form.elements.address.addEventListener('change', () => {
+});
+
+form.elements.address.addEventListener('change', () => {
   clearErrorMessage('address');
-  });
-  
-  form.elements.city.addEventListener('change', () => {
+});
+
+form.elements.city.addEventListener('change', () => {
   clearErrorMessage('city');
-  });
-  
-  form.elements.email.addEventListener('change', () => {
+});
+
+form.elements.email.addEventListener('change', () => {
   clearErrorMessage('email');
-  });
+});
