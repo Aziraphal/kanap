@@ -83,11 +83,3 @@ const addToCartButton = document.getElementById('addToCart');
 addToCartButton.addEventListener('click', addToCart)
 
 //localStorage.clear("cart")
-
-
-
-
-
-
-
-        
