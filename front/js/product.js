@@ -44,16 +44,15 @@ fetch(productPage)
     })
     .catch((error) => { });
     
-//Ajout du produit dans le panier
 
-// Fonction appelée lorsque le bouton d'ajout au panier est cliqué
+// Fonction ajout du produit dans le panier (appelé lors du click)
 function addToCart() {
-    // Récupération des données du produit
-    const currentIdProduct = url.searchParams.get("id");
-    const currentColor = document.getElementById('colors').value;
-    const currentQuantity = document.getElementById('quantity').value;
+  // Récupération des données du produit
+  const currentIdProduct = url.searchParams.get("id");
+  const currentColor = document.getElementById('colors').value;
+  const currentQuantity = document.getElementById('quantity').value;
 
-    // Création de l'objet représentant le produit
+  // Création de l'objet représentant le produit
   const product = {
     id: currentIdProduct,
     color: currentColor,
@@ -69,12 +68,27 @@ function addToCart() {
     cart = JSON.parse(cart);
   }
 
-  // Ajout du produit au panier
-  cart.push(product);
-  
+  // Vérifie s'il y a déjà un produit de la même couleur dans le panier
+  let existingProduct = null;
+  for (let i = 0; i < cart.length; i++) {
+    if (cart[i].id === currentIdProduct && cart[i].color === currentColor) {
+      existingProduct = cart[i];
+      break;
+    }
+  }
+
+  // Si le produit existe déjà, augmente sa quantité
+  if (existingProduct) {
+    existingProduct.quantity = parseInt(existingProduct.quantity) + parseInt(currentQuantity);
+  } else {
+    // Sinon, ajoute le nouveau produit au panier
+    cart.push(product);
+  }
+
   // Enregistrement du panier mis à jour dans le LocalStorage
   localStorage.setItem('cart', JSON.stringify(cart));
 }
+
 
 // Récupération du bouton d'ajout au panier
 const addToCartButton = document.getElementById('addToCart');
