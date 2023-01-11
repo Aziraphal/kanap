@@ -2,8 +2,8 @@
 let cart = JSON.parse(localStorage.getItem('cart'));
 //console.log(cart)
 
+// fonction de mise à jour de la quantité du produit dans le panier
 function updateQuantity(id, color, quantity) {
-  // Mise à jour de la quantité du produit dans le panier
   cart = cart.map(item => {
     if (item.id === id && item.color === color) {
       item.quantity = quantity;
@@ -15,6 +15,7 @@ function updateQuantity(id, color, quantity) {
   localStorage.setItem('cart', JSON.stringify(cart));
 }
 
+// Fonction de suppression du produit du panier
 function deleteFromCart(id, color) {
   // Parcours du panier
   for (let i = 0; i < cart.length; i++) {
@@ -30,6 +31,7 @@ function deleteFromCart(id, color) {
   localStorage.setItem('cart', JSON.stringify(cart));
 }
 
+// Fonction permettant l'affichage du panier
 async function displayCart() {
   // Initialisation des variables de total
   let totalQuantity = 0;
@@ -56,7 +58,6 @@ async function displayCart() {
 
       productsData.push(data);
     }
-
 
     // Parcours du tableau de produits
     for (const productData of productsData) {
@@ -142,8 +143,10 @@ window.addEventListener('storage', function (event) {
 
 // Initialisation de l'affichage du panier sur la page web
 displayCart();
+// Fin de l'affichage panier 
 
 
+// Partie sur le formulaire
 
 // Récupère le formulaire
 const form = document.querySelector('.cart__order__form');
@@ -224,14 +227,14 @@ form.addEventListener('submit', (event) => {
       'Accept': 'application/json',
       'Content-Type': 'application/json'
     },
-    
+
     body: JSON.stringify({
       contact: {
         firstName, lastName, address, city, email
       },
-      products : getId
+      products: getId
     })
-  }); 
+  });
   result.then(async (answer) => {
     try {
       const data = await answer.json();
