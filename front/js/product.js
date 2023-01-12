@@ -1,6 +1,7 @@
 //Crée une instance de l'objet URL en utilisant l'URL actuelle de la fenêtre du navigateur (window.location.href).
 const url = new URL(window.location.href);
 //console.log(url)
+
 //Extrait l'ID de l'URL en utilisant la méthode searchParams.get() et en passant "id" en paramètre.
 const currentIdProduct = url.searchParams.get("id");
 //console.log(currentIdProduct)
@@ -95,4 +96,3 @@ const addToCartButton = document.getElementById('addToCart');
 
 // Ajout d'un écouteur d'événement de clic sur le bouton
 addToCartButton.addEventListener('click', addToCart)
-

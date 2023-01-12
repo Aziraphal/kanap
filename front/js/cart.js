@@ -118,6 +118,7 @@ async function displayCart() {
         input.addEventListener('change', displayCart)
       });
 
+      // Quantité totale et calcul du prix total
       totalQuantity += productData.quantity++;
       totalPrice += itemQuantity * productData.price;
     }

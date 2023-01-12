@@ -17,6 +17,3 @@ fetch(`http://localhost:3000/api/products`)
             }
         })
         .catch(er => console.log(er)))
-
-
-
