@@ -58,13 +58,15 @@ function addToCart() {
   };
 
   // Récupération du panier actuel dans le LocalStorage
-  let cart = localStorage.getItem('cart');
-  if (cart === null) {
-    // Initialisation du panier s'il n'existe pas encore
-    cart = [];
-  } else {
-    cart = JSON.parse(cart);
+  let cart;
+try {
+  cart = JSON.parse(localStorage.getItem('cart'));
+  if (!Array.isArray(cart)) {
+    throw new Error();
   }
+} catch (e) {
+  cart = [];
+}
 
   // Vérifie s'il y a déjà un produit de la même couleur dans le panier
   let existingProduct = null;
