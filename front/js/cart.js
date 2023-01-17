@@ -2,6 +2,7 @@
 let cart = JSON.parse(localStorage.getItem('cart'));
 //console.log(cart)
 
+
 // fonction de mise à jour de la quantité du produit dans le panier
 function updateQuantity(id, color, quantity) {
   cart = cart.map(item => {
@@ -15,10 +16,10 @@ function updateQuantity(id, color, quantity) {
   localStorage.setItem('cart', JSON.stringify(cart));
 }
 
-// Fonction de suppression du produit du panier
+// fonction de suppression d'un produit
 function deleteFromCart(id, color) {
-  // Parcours du panier
-  for (let i = 0; i < cart.length; i++) {
+   // Parcours du panier
+   for (let i = 0; i < cart.length; i++) {
     // Si l'élément correspond à celui à supprimer
     if (cart[i].id === id && cart[i].color === color) {
       // Suppression de l'élément
@@ -26,7 +27,6 @@ function deleteFromCart(id, color) {
       if (i === cart.length - 1) break;
     }
   }
-
   // Mise à jour du panier dans le LocalStorage
   localStorage.setItem('cart', JSON.stringify(cart));
 }
@@ -51,18 +51,17 @@ async function displayCart() {
       // Récupération des informations sur le produit à l'aide de fetch
       const response = await fetch(`http://localhost:3000/api/products/${item.id}`);
       const data = await response.json();
-
+      
       // Récupération de la quantité et de la couleur du produit dans le panier
       data.quantity = item.quantity;
       data.color = item.color;
-
       productsData.push(data);
     }
 
     // Parcours du tableau de produits
     for (const productData of productsData) {
       // Récupération de la quantité de l'article du panier
-      const itemQuantity = cart.find(item => item.id === productData._id).quantity;
+      const itemQuantity = productData.quantity;
       // Création de l'élément article pour chaque produit
       const article = document.createElement('article');
       article.classList.add('cart__item');

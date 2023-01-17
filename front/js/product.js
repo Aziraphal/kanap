@@ -1,6 +1,5 @@
 //Crée une instance de l'objet URL en utilisant l'URL actuelle de la fenêtre du navigateur (window.location.href).
 const url = new URL(window.location.href);
-//console.log(url)
 
 //Extrait l'ID de l'URL en utilisant la méthode searchParams.get() et en passant "id" en paramètre.
 const currentIdProduct = url.searchParams.get("id");
@@ -9,14 +8,12 @@ const currentIdProduct = url.searchParams.get("id");
 //Crée une nouvelle URL en concaténant l'URL de base de l'API "apiProductsUrl" avec l'ID extrait "currentIdProduct".
 const apiProductsUrl = 'http://localhost:3000/api/products/';
 const productPage = apiProductsUrl + currentIdProduct;
-//console.log(productPage)
-
 
 //Affichage du produit sur la page
 fetch(productPage)
   .then(r => r.json())
   .then((data) => {
-    //console.log(data);
+    console.log(data);
 
     //photo du produit
     let imageProduct = document.getElementsByClassName("item__img")[0];
